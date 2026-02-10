@@ -1,0 +1,123 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #050515;
+    font-family: 'Georgia', serif;
+    color: white;
+}
+
+#sky {
+    display: block;
+}
+
+/* --- TITLE --- */
+#constellation-title {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.8em;
+    color: rgba(255, 182, 255, 0.9);
+    text-shadow: 0 0 20px rgba(255, 182, 255, 0.5);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* --- INTRO OVERLAY --- */
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #140a2e 0%, #050515 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 1.5s ease;
+}
+
+#intro-content {
+    text-align: center;
+    max-width: 500px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 182, 255, 0.2);
+}
+
+#intro-content h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3em;
+    color: #ffb6ff;
+    margin-bottom: 20px;
+}
+
+#start-btn {
+    background: transparent;
+    border: 1px solid #ffb6ff;
+    color: #ffb6ff;
+    padding: 12px 35px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.4s ease;
+    margin-top: 20px;
+}
+
+#start-btn:hover {
+    background: #ffb6ff;
+    color: #050515;
+    box-shadow: 0 0 20px rgba(255, 182, 255, 0.4);
+}
+
+/* --- POPUPS --- */
+#popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(15, 10, 30, 0.9);
+    padding: 30px;
+    border-radius: 20px;
+    width: 320px;
+    text-align: center;
+    border: 1px solid rgba(255, 182, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    z-index: 500;
+    backdrop-filter: blur(5px);
+}
+
+#popup button {
+    margin-top: 20px;
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: none;
+    background: #ffb6ff;
+    color: #050515;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* --- FINAL MESSAGE --- */
+#finalMessage {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 90%;
+    z-index: 100;
+    pointer-events: none;
+}
+
+#finalMessage h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 4em;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px white;
+}
