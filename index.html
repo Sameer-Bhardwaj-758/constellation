@@ -2,116 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>For Reeya</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <title>The Constellation Reeya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
     <style>
-        /* Force the body to be exactly the size of the screen */
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            overflow: hidden; 
-            background-color: #050515; 
-        }
-
-        /* Force Canvas to fill the background and stay visible */
-        #sky { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            display: block;
-            z-index: 1; 
-        }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050515; }
+        #sky { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; z-index: 1; }
         
-        #constellation-title { 
-            position: absolute; 
-            top: 40px; 
-            width: 100%; 
-            text-align: center; 
-            font-family: 'Dancing Script', cursive; 
-            font-size: 3.5em; 
-            color: #ffb6ff; 
-            z-index: 10; 
-            pointer-events: none; 
-        }
-        
-        #overlay { 
-            position: fixed; 
-            inset: 0; 
-            background: #050515; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
-        }
+        /* Intro Styling */
+        #overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, #140a2e 0%, #050515 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1.5s ease; }
+        #intro-box { text-align: center; color: white; max-width: 600px; padding: 40px; border: 1px solid rgba(255, 182, 255, 0.3); border-radius: 40px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); }
+        #intro-box h1 { font-family: 'Dancing Script', cursive; font-size: 4em; color: #ffb6ff; margin: 0; text-shadow: 0 0 20px rgba(255, 182, 255, 0.5); }
+        #intro-box p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2em; line-height: 1.6; margin: 20px 0; opacity: 0.9; }
+        #start-btn { background: transparent; border: 1px solid #ffb6ff; color: #ffb6ff; padding: 15px 40px; font-size: 1.1em; cursor: pointer; border-radius: 50px; transition: 0.4s; font-family: 'Playfair Display', serif; }
+        #start-btn:hover { background: #ffb6ff; color: #050515; box-shadow: 0 0 30px #ffb6ff; }
 
-        #intro-box { 
-            text-align: center; 
-            color: white; 
-            border: 2px solid #ffb6ff; 
-            padding: 50px; 
-            border-radius: 20px;
-        }
+        /* Popup Styling */
+        #popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10, 5, 25, 0.95); color: white; padding: 40px; border: 1px solid #ffb6ff; z-index: 5000; display: none; text-align: center; border-radius: 25px; box-shadow: 0 0 50px rgba(0,0,0,1); width: 320px; }
+        #popup h3 { font-family: 'Dancing Script', cursive; font-size: 2.2em; color: #ffb6ff; margin: 0 0 15px 0; }
+        #popup p { font-family: 'Playfair Display', serif; font-size: 1.1em; line-height: 1.5; }
+        #close-btn { margin-top: 25px; cursor: pointer; padding: 8px 25px; background: transparent; border: 1px solid #ffb6ff; color: #ffb6ff; border-radius: 20px; }
 
-        #start-btn { 
-            background: #ffb6ff; 
-            border: none; 
-            padding: 15px 40px; 
-            font-size: 1.2em; 
-            cursor: pointer; 
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        #popup { 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: #1a1a3a; 
-            color: white; 
-            padding: 30px; 
-            border: 2px solid #ffb6ff; 
-            z-index: 5000; 
-            display: none; 
-            text-align: center;
-            border-radius: 15px;
-        }
-
-        #final-msg { 
-            position: fixed; 
-            top: 40%; 
-            width: 100%; 
-            text-align: center; 
-            z-index: 100; 
-            color: white; 
-            display: none; 
-            pointer-events: none;
-        }
+        /* Final Name Display */
+        #final-wrap { position: fixed; top: 40%; width: 100%; text-align: center; z-index: 100; color: white; display: none; pointer-events: none; }
+        #final-msg { font-family: 'Dancing Script', cursive; font-size: 5em; margin: 0; text-shadow: 0 0 30px white, 0 0 50px #ffb6ff; animation: glow 3s infinite alternate; }
+        @keyframes glow { from { opacity: 0.8; } to { opacity: 1; transform: scale(1.05); } }
     </style>
 </head>
 <body>
 
     <div id="overlay">
         <div id="intro-box">
-            <h1 style="font-family: 'Dancing Script'; font-size: 3em;">🌌 For Reeya</h1>
-            <p>Connect the stars to see my promises.</p>
+            <h1>My Universe, Reeya</h1>
+            <p>They say the stars hold the secrets of the past, but tonight, they hold my promises for our future. Connect each one to unveil a journey through my heart.</p>
             <button id="start-btn">Begin Our Journey</button>
         </div>
     </div>
 
-    <div id="constellation-title">The Constellation Reeya</div>
-    
     <div id="popup">
-        <p id="popup-text" style="font-size: 1.2em;"></p>
-        <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:15px; cursor:pointer; padding:5px 15px; background:#ffb6ff; border:none;">Close</button>
+        <h3 id="popup-title"></h3>
+        <p id="popup-text"></p>
+        <button id="close-btn">Return to Sky</button>
     </div>
 
-    <div id="final-msg">
-        <h2 style="font-family: 'Dancing Script'; font-size: 4em; color: #ffb6ff;">✨ My Valentine ✨</h2>
+    <div id="final-wrap">
+        <h2 id="final-msg">Forever Yours, Reeya</h2>
+        <p style="font-family: 'Playfair Display'; font-size: 1.4em; opacity: 0.8;">My Valentine, today and always.</p>
     </div>
 
     <canvas id="sky"></canvas>
@@ -119,92 +54,152 @@
     <script>
         const canvas = document.getElementById("sky");
         const ctx = canvas.getContext("2d");
-        let stars = [], count = 0;
+        let stars = [], bgStars = [], hearts = [], nameStars = [], shootingStar = null;
+        let count = 0, showName = false, nameAlpha = 0;
 
-        // FIXED COORDINATES FOR DESKTOP
-        const data = [
-            {x: 0.2, y: 0.4, t: "I promise to choose you every day."},
-            {x: 0.35, y: 0.6, t: "My heart will always belong to you."},
-            {x: 0.5, y: 0.4, t: "I'll fill your life with sweetness."},
-            {x: 0.65, y: 0.6, t: "I'll be your forever comfort."},
-            {x: 0.8, y: 0.4, t: "I will stand beside you always."},
-            {x: 0.6, y: 0.2, t: "Emotional hugs across distance."},
-            {x: 0.4, y: 0.2, t: "Soft and true love forever."}
+        const constellationData = [
+            {x: 0.15, y: 0.45, day: "Rose Day", text: "Like a rose, my love for you grows more beautiful every day. I promise to cherish you always."},
+            {x: 0.30, y: 0.65, day: "Propose Day", text: "I don't just want you for today, but for every tomorrow. I promise my heart is yours forever."},
+            {x: 0.45, y: 0.40, day: "Chocolate Day", text: "I promise to fill your life with sweetness, even during the bitter moments."},
+            {x: 0.60, y: 0.65, day: "Teddy Day", text: "I promise to be your comfort, your warmth, and the one you can always lean on."},
+            {x: 0.75, y: 0.45, day: "Promise Day", text: "This constellation is my vow to you. I promise to stand beside you, no matter the distance."},
+            {x: 0.60, y: 0.25, day: "Hug Day", text: "I promise to hold you close in my heart until I can hold you in my arms again."},
+            {x: 0.35, y: 0.20, day: "Kiss Day", text: "I promise that every kiss we share will be as soft and true as the very first one."}
+        ];
+
+        // "REEYA" Star Coordinates (Normalized)
+        const reeyaCoords = [
+            {x: 0.38, y: 0.85}, {x: 0.38, y: 0.88}, {x: 0.38, y: 0.91}, {x: 0.39, y: 0.85}, {x: 0.40, y: 0.86}, {x: 0.39, y: 0.88}, {x: 0.40, y: 0.91}, // R
+            {x: 0.44, y: 0.85}, {x: 0.44, y: 0.88}, {x: 0.44, y: 0.91}, {x: 0.46, y: 0.85}, {x: 0.46, y: 0.88}, {x: 0.46, y: 0.91}, // E
+            {x: 0.50, y: 0.85}, {x: 0.50, y: 0.88}, {x: 0.50, y: 0.91}, {x: 0.52, y: 0.85}, {x: 0.52, y: 0.88}, {x: 0.52, y: 0.91}, // E
+            {x: 0.56, y: 0.85}, {x: 0.58, y: 0.85}, {x: 0.57, y: 0.87}, {x: 0.57, y: 0.91}, // Y
+            {x: 0.62, y: 0.91}, {x: 0.63, y: 0.87}, {x: 0.64, y: 0.85}, {x: 0.65, y: 0.87}, {x: 0.66, y: 0.91} // A
         ];
 
         function init() {
-            // Set canvas size to match the window exactly
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            stars = data.map(s => ({
-                x: s.x * canvas.width,
-                y: s.y * canvas.height,
-                t: s.t,
-                clicked: false
-            }));
-            console.log("Stars initialized at:", stars); // Debugging check
+            stars = constellationData.map(s => ({...s, px: s.x * canvas.width, py: s.y * canvas.height, clicked: false}));
+            
+            bgStars = [];
+            for(let i=0; i<150; i++) bgStars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, t: Math.random()*Math.PI});
+            
+            hearts = [];
+            for(let i=0; i<20; i++) hearts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*12+8, speed: Math.random()*0.3+0.1});
         }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Background
+        class ShootingStar {
+            constructor() { this.x = Math.random()*canvas.width; this.y = 0; this.len = 100; this.speed = 15; this.opacity = 1; }
+            draw() {
+                ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - this.len, this.y + this.len/2);
+                ctx.stroke();
+                this.x += this.speed; this.y += this.speed/2; this.opacity -= 0.01;
+            }
+        }
+
+        function drawMoon() {
+            const x = canvas.width * 0.85, y = 120;
+            ctx.save();
+            ctx.shadowBlur = 40; ctx.shadowColor = "white";
+            ctx.fillStyle = "#fffcf0";
+            ctx.beginPath(); ctx.arc(x, y, 50, 0, Math.PI*2); ctx.fill();
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath(); ctx.arc(x - 20, y - 10, 50, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        }
+
+        function animate() {
             ctx.fillStyle = "#050515";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+
+            drawMoon();
+
+            // Background Twinkle
+            bgStars.forEach(s => {
+                s.t += 0.02;
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.2 + Math.abs(Math.sin(s.t)) * 0.5})`;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+            });
+
+            // Floating Hearts
+            ctx.fillStyle = "rgba(255, 182, 255, 0.3)";
+            hearts.forEach(h => {
+                h.y -= h.speed; if(h.y < -20) h.y = canvas.height + 20;
+                ctx.font = h.size + "px serif"; ctx.fillText("❤", h.x, h.y);
+            });
 
             // Lines
-            ctx.strokeStyle = "rgba(255, 182, 255, 0.4)";
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(255, 182, 255, 0.2)";
             ctx.beginPath();
-            stars.forEach((s, i) => {
-                if(i === 0) ctx.moveTo(s.x, s.y);
-                else ctx.lineTo(s.x, s.y);
-            });
+            for(let i=0; i<stars.length-1; i++) {
+                ctx.moveTo(stars[i].px, stars[i].py);
+                ctx.lineTo(stars[i+1].px, stars[i+1].py);
+            }
             ctx.stroke();
 
             // Stars
             stars.forEach(s => {
-                ctx.fillStyle = s.clicked ? "#ffb6ff" : "white";
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = s.clicked ? 25 : 10;
                 ctx.shadowColor = s.clicked ? "#ffb6ff" : "white";
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.clicked ? 10 : 6, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillStyle = s.clicked ? "#ffb6ff" : "white";
+                ctx.beginPath(); ctx.arc(s.px, s.py, s.clicked ? 9 : 6, 0, Math.PI*2); ctx.fill();
             });
 
-            requestAnimationFrame(draw);
+            if (shootingStar) {
+                shootingStar.draw();
+                if (shootingStar.opacity <= 0) shootingStar = null;
+            }
+
+            if (showName) {
+                nameAlpha = Math.min(1, nameAlpha + 0.005);
+                ctx.shadowBlur = 10; ctx.shadowColor = "white";
+                reeyaCoords.forEach(p => {
+                    ctx.fillStyle = `rgba(255, 182, 255, ${nameAlpha})`;
+                    ctx.beginPath(); ctx.arc(p.x * canvas.width, p.y * canvas.height, 2.5, 0, Math.PI*2); ctx.fill();
+                });
+            }
+
+            requestAnimationFrame(animate);
         }
 
         canvas.addEventListener("click", (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
             stars.forEach(s => {
-                const dist = Math.sqrt((mouseX - s.x)**2 + (mouseY - s.y)**2);
+                const dist = Math.sqrt((e.clientX - s.px)**2 + (e.clientY - s.py)**2);
                 if(dist < 30 && !s.clicked) {
-                    s.clicked = true;
-                    count++;
-                    document.getElementById('popup-text').innerText = s.t;
+                    s.clicked = true; count++;
+                    document.getElementById('popup-title').innerText = s.day;
+                    document.getElementById('popup-text').innerText = s.text;
                     document.getElementById('popup').style.display = 'block';
                     
                     if(count === stars.length) {
                         setTimeout(() => {
-                            document.getElementById('final-msg').style.display = 'block';
-                        }, 1000);
+                            document.getElementById('popup').style.display = 'none';
+                            shootingStar = new ShootingStar();
+                            setTimeout(() => {
+                                showName = true;
+                                document.getElementById('final-wrap').style.display = 'block';
+                            }, 1000);
+                        }, 4000);
                     }
                 }
             });
         });
 
         document.getElementById('start-btn').addEventListener('click', () => {
-            document.getElementById('overlay').style.display = 'none';
-            init();
-            draw();
+            init(); animate();
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => document.getElementById('overlay').style.display = 'none', 1500);
         });
 
-        // Ensure it handles window resizing
+        document.getElementById('close-btn').addEventListener('click', () => {
+            document.getElementById('popup').style.display = 'none';
+        });
+
         window.addEventListener('resize', init);
     </script>
 </body>
