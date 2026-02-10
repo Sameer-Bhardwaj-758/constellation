@@ -2,30 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Our Constellation | Reeya</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; background: #050515; font-family: 'Georgia', serif; color: white; }
-        #sky { display: block; }
-        #constellation-title { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); font-family: 'Dancing Script', cursive; font-size: 2.8em; color: rgba(255, 182, 255, 0.9); text-shadow: 0 0 20px rgba(255, 182, 255, 0.5); pointer-events: none; z-index: 10; }
-        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #140a2e 0%, #050515 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1.5s ease; }
-        #intro-content { text-align: center; max-width: 500px; padding: 40px; background: rgba(255, 255, 255, 0.05); border-radius: 30px; backdrop-filter: blur(15px); border: 1px solid rgba(255, 182, 255, 0.2); }
-        #intro-content h1 { font-family: 'Dancing Script', cursive; font-size: 3em; color: #ffb6ff; margin-bottom: 20px; }
-        #start-btn { background: transparent; border: 1px solid #ffb6ff; color: #ffb6ff; padding: 12px 35px; font-size: 1.1em; cursor: pointer; border-radius: 50px; transition: all 0.4s ease; margin-top: 20px; }
-        #start-btn:hover { background: #ffb6ff; color: #050515; box-shadow: 0 0 20px rgba(255, 182, 255, 0.4); }
-        #popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 10, 30, 0.95); padding: 30px; border-radius: 20px; width: 280px; text-align: center; border: 1px solid rgba(255, 182, 255, 0.3); z-index: 500; display: none; }
-        #popup button { margin-top: 20px; padding: 10px 25px; border-radius: 20px; border: none; background: #ffb6ff; color: #050515; font-weight: bold; cursor: pointer; }
-        #finalMessage { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 90%; z-index: 100; pointer-events: none; display: none; opacity: 0; }
-        #finalMessage h2 { font-family: 'Dancing Script', cursive; font-size: 4em; margin-bottom: 10px; text-shadow: 0 0 20px white; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050515; }
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        #constellation-title { position: absolute; top: 30px; width: 100%; text-align: center; font-family: 'Dancing Script', cursive; font-size: 2.2em; color: rgba(255, 182, 255, 0.9); pointer-events: none; z-index: 10; }
+        
+        #intro-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, #140a2e 0%, #050515 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1s; }
+        #intro-content { text-align: center; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 182, 255, 0.2); color: white; margin: 20px; }
+        #start-btn { background: #ffb6ff; border: none; color: #050515; padding: 12px 30px; font-size: 1.1em; cursor: pointer; border-radius: 50px; font-weight: bold; margin-top: 20px; }
+
+        #popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 10, 30, 0.95); padding: 25px; border-radius: 15px; width: 260px; text-align: center; border: 1px solid #ffb6ff; z-index: 5000; display: none; color: white; }
+        #popup button { margin-top: 15px; padding: 8px 20px; border-radius: 20px; border: none; background: #ffb6ff; cursor: pointer; }
+
+        #finalMessage { position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 90%; z-index: 100; display: none; color: white; pointer-events: none; }
+        #finalMessage h2 { font-family: 'Dancing Script', cursive; font-size: 3.5em; margin: 0; text-shadow: 0 0 15px #ffb6ff; }
     </style>
 </head>
 <body>
 
     <div id="intro-overlay">
         <div id="intro-content">
-            <h1>🌌 Our Constellation</h1>
-            <p>Every star in this sky represents a promise I've made to you.<br>As you connect them, our story unfolds.</p>
+            <h1 style="font-family: 'Dancing Script'; font-size: 2.5em; color: #ffb6ff;">🌌 For Reeya</h1>
+            <p>Every star is a promise.<br>Connect them all to see our story.</p>
             <button id="start-btn">Begin Our Journey</button>
         </div>
     </div>
@@ -39,87 +41,109 @@
     <script>
         const canvas = document.getElementById("sky");
         const ctx = canvas.getContext("2d");
-        let clickedCount = 0, showName = false, nameAlpha = 0, shootingStar = null;
-        const bgStars = [], hearts = [], constellationData = [
-            { px: 0.15, py: 0.45, day: "Rose Day", text: "I promise to keep choosing you every day." },
-            { px: 0.30, py: 0.65, day: "Propose Day", text: "I promise my heart will always belong to you." },
-            { px: 0.45, py: 0.50, day: "Chocolate Day", text: "I promise to fill your life with sweetness." },
-            { px: 0.65, py: 0.70, day: "Teddy Day", text: "I promise to be your forever comfort." },
-            { px: 0.85, py: 0.40, day: "Promise Day", text: "I promise to stand beside you always." },
-            { px: 0.60, py: 0.20, day: "Hug Day", text: "I promise emotional hugs across distance." },
-            { px: 0.35, py: 0.15, day: "Kiss Day", text: "I promise soft and true love forever." }
+        let stars = [], bgStars = [], hearts = [], reeya = [], shootingStar = null;
+        let count = 0, nameVisible = false, nameAlpha = 0;
+
+        const data = [
+            { x: 0.15, y: 0.45, d: "Rose Day", t: "I promise to keep choosing you every day." },
+            { x: 0.30, y: 0.65, d: "Propose Day", t: "I promise my heart will always belong to you." },
+            { x: 0.45, y: 0.50, d: "Chocolate Day", t: "I promise to fill your life with sweetness." },
+            { x: 0.65, y: 0.70, d: "Teddy Day", t: "I promise to be your forever comfort." },
+            { x: 0.85, y: 0.40, d: "Promise Day", t: "I promise to stand beside you always." },
+            { x: 0.60, y: 0.20, d: "Hug Day", t: "I promise emotional hugs across distance." },
+            { x: 0.35, y: 0.15, d: "Kiss Day", t: "I promise soft and true love forever." }
         ];
 
-        const reeyaStars = [
-            {x: 0.35, y: 0.85}, {x: 0.35, y: 0.88}, {x: 0.35, y: 0.91}, {x: 0.36, y: 0.85}, {x: 0.37, y: 0.86}, {x: 0.36, y: 0.88}, {x: 0.37, y: 0.91}, 
-            {x: 0.42, y: 0.85}, {x: 0.42, y: 0.88}, {x: 0.42, y: 0.91}, {x: 0.44, y: 0.85}, {x: 0.44, y: 0.88}, {x: 0.44, y: 0.91}, 
-            {x: 0.48, y: 0.85}, {x: 0.48, y: 0.88}, {x: 0.48, y: 0.91}, {x: 0.50, y: 0.85}, {x: 0.50, y: 0.88}, {x: 0.50, y: 0.91}, 
-            {x: 0.55, y: 0.85}, {x: 0.57, y: 0.85}, {x: 0.56, y: 0.87}, {x: 0.56, y: 0.91}, 
-            {x: 0.62, y: 0.91}, {x: 0.63, y: 0.87}, {x: 0.64, y: 0.85}, {x: 0.65, y: 0.87}, {x: 0.66, y: 0.91}, {x: 0.635, y: 0.89}, {x: 0.655, y: 0.89}
-        ];
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = data.map(s => ({ ...s, px: s.x * canvas.width, py: s.y * canvas.height, clicked: false }));
+            
+            bgStars = [];
+            for(let i=0; i<100; i++) bgStars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5});
+            
+            hearts = [];
+            for(let i=0; i<15; i++) hearts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*10+10, v: Math.random()*0.5+0.2});
 
-        function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            bgStars.length = 0; for (let i = 0; i < 100; i++) bgStars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.5, twinkle: Math.random() * Math.PI });
-            hearts.length = 0; for (let i = 0; i < 15; i++) hearts.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 10 + 10, speed: Math.random() * 0.4 + 0.2, opacity: Math.random() * 0.5 });
-            mainStars = constellationData.map(star => ({ ...star, x: star.px * canvas.width, y: star.py * canvas.height, radius: 6, twinkle: Math.random() * Math.PI, clicked: false }));
+            reeya = [
+                {x: 0.35, y: 0.85}, {x: 0.35, y: 0.88}, {x: 0.35, y: 0.91}, {x: 0.36, y: 0.85}, {x: 0.37, y: 0.86}, {x: 0.36, y: 0.88}, {x: 0.37, y: 0.91}, 
+                {x: 0.42, y: 0.85}, {x: 0.42, y: 0.88}, {x: 0.42, y: 0.91}, {x: 0.44, y: 0.85}, {x: 0.44, y: 0.88}, {x: 0.44, y: 0.91}, 
+                {x: 0.48, y: 0.85}, {x: 0.48, y: 0.88}, {x: 0.48, y: 0.91}, {x: 0.50, y: 0.85}, {x: 0.50, y: 0.88}, {x: 0.50, y: 0.91}, 
+                {x: 0.55, y: 0.85}, {x: 0.57, y: 0.85}, {x: 0.56, y: 0.87}, {x: 0.56, y: 0.91}, 
+                {x: 0.62, y: 0.91}, {x: 0.63, y: 0.87}, {x: 0.64, y: 0.85}, {x: 0.65, y: 0.87}, {x: 0.66, y: 0.91}
+            ];
         }
 
-        class ShootingStar {
-            constructor() { this.reset(); }
-            reset() { this.x = Math.random() * canvas.width * 0.3; this.y = 0; this.vx = 15; this.vy = 8; this.active = true; }
-            draw() { ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - 100, this.y - 50); ctx.strokeStyle = "rgba(255, 255, 255, 0.8)"; ctx.lineWidth = 2; ctx.stroke(); this.x += this.vx; this.y += this.vy; if (this.y > canvas.height || this.x > canvas.width) this.active = false; }
-        }
+        function draw() {
+            ctx.fillStyle = "#050515";
+            ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        function drawMoon() {
-            const x = canvas.width * 0.85, y = 100;
-            ctx.save(); ctx.shadowBlur = 30; ctx.shadowColor = "white"; ctx.beginPath(); ctx.arc(x, y, 40, 0, Math.PI * 2); ctx.fillStyle = "#fffcf0"; ctx.fill();
-            ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(x - 18, y - 8, 40, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-        }
+            // Moon
+            ctx.fillStyle = "#fffcf0";
+            ctx.beginPath(); ctx.arc(canvas.width*0.8, 80, 30, 0, Math.PI*2); ctx.fill();
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath(); ctx.arc(canvas.width*0.8-12, 72, 30, 0, Math.PI*2); ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
 
-        function animate() {
-            ctx.clearRect(0,0, canvas.width, canvas.height);
-            let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, "#050515"); grad.addColorStop(0.5, "#140a2e"); grad.addColorStop(1, "#2e1a47");
-            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            drawMoon();
-            hearts.forEach(h => { h.y -= h.speed; if (h.y < -30) h.y = canvas.height + 30; ctx.globalAlpha = h.opacity; ctx.font = `${h.size}px serif`; ctx.fillText("❤", h.x, h.y); });
-            ctx.globalAlpha = 1;
-            bgStars.forEach(s => { s.twinkle += 0.02; ctx.beginPath(); ctx.arc(s.x, s.y, s.radius + Math.sin(s.twinkle)*0.5, 0, Math.PI*2); ctx.fillStyle = "white"; ctx.fill(); });
-            ctx.beginPath(); ctx.strokeStyle = "rgba(255, 182, 255, 0.2)"; ctx.lineWidth = 1;
-            for (let i = 0; i < mainStars.length - 1; i++) { ctx.moveTo(mainStars[i].x, mainStars[i].y); ctx.lineTo(mainStars[i+1].x, mainStars[i+1].y); } ctx.stroke();
-            mainStars.forEach(s => { s.twinkle += 0.05; ctx.shadowBlur = s.clicked ? 20 : 10; ctx.shadowColor = s.clicked ? "#ffb6ff" : "white"; ctx.beginPath(); ctx.arc(s.x, s.y, s.radius + Math.sin(s.twinkle)*2, 0, Math.PI*2); ctx.fillStyle = s.clicked ? "#ffb6ff" : "white"; ctx.fill(); ctx.shadowBlur = 0; });
-            if (shootingStar && shootingStar.active) shootingStar.draw();
-            if (showName) {
-                if (nameAlpha < 1) nameAlpha += 0.005;
-                reeyaStars.forEach(s => { ctx.beginPath(); ctx.arc(s.x * canvas.width, s.y * canvas.height, 2.5, 0, Math.PI*2); ctx.fillStyle = `rgba(255, 182, 255, ${nameAlpha})`; ctx.shadowBlur = 8; ctx.shadowColor = "white"; ctx.fill(); });
+            // Hearts
+            ctx.fillStyle = "#ffb6ff";
+            hearts.forEach(h => {
+                h.y -= h.v; if(h.y < -20) h.y = canvas.height+20;
+                ctx.font = h.s+"px serif"; ctx.fillText("❤", h.x, h.y);
+            });
+
+            // BG Stars
+            ctx.fillStyle = "white";
+            bgStars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); });
+
+            // Lines
+            ctx.strokeStyle = "rgba(255, 182, 255, 0.3)";
+            ctx.beginPath();
+            for(let i=0; i<stars.length-1; i++) { ctx.moveTo(stars[i].px, stars[i].py); ctx.lineTo(stars[i+1].px, stars[i+1].py); }
+            ctx.stroke();
+
+            // Main Stars
+            stars.forEach(s => {
+                ctx.shadowBlur = s.clicked ? 15 : 5; ctx.shadowColor = "white";
+                ctx.fillStyle = s.clicked ? "#ffb6ff" : "white";
+                ctx.beginPath(); ctx.arc(s.px, s.py, s.clicked ? 6 : 4, 0, Math.PI*2); ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            if(nameVisible) {
+                nameAlpha = Math.min(1, nameAlpha + 0.01);
+                ctx.fillStyle = `rgba(255, 182, 255, ${nameAlpha})`;
+                reeya.forEach(p => { ctx.beginPath(); ctx.arc(p.x*canvas.width, p.y*canvas.height, 2, 0, Math.PI*2); ctx.fill(); });
             }
-            requestAnimationFrame(animate);
+
+            requestAnimationFrame(draw);
         }
 
-        window.addEventListener('load', () => { init(); animate(); });
-        window.addEventListener('resize', init);
-        document.getElementById('start-btn').addEventListener('click', () => { document.getElementById('intro-overlay').style.opacity = '0'; setTimeout(() => { document.getElementById('intro-overlay').style.display = 'none'; }, 1000); });
-        document.getElementById('close-btn').addEventListener('click', () => { document.getElementById('popup').style.display = 'none'; });
         canvas.addEventListener("click", (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-            mainStars.forEach(star => {
-                const dist = Math.sqrt((mx - star.x)**2 + (my - star.y)**2);
-                if (dist < 30 && !star.clicked) {
-                    star.clicked = true; clickedCount++;
-                    document.getElementById('popup-text').innerHTML = `<strong>${star.day}</strong><br><br>${star.text}`;
+            stars.forEach(s => {
+                const d = Math.sqrt((e.clientX-s.px)**2 + (e.clientY-s.py)**2);
+                if(d < 30 && !s.clicked) {
+                    s.clicked = true; count++;
+                    document.getElementById('popup-text').innerHTML = `<b>${s.d}</b><br><br>${s.t}`;
                     document.getElementById('popup').style.display = "block";
-                    if (clickedCount === mainStars.length) {
+                    if(count === stars.length) {
                         setTimeout(() => {
                             document.getElementById('popup').style.display = "none";
-                            shootingStar = new ShootingStar();
-                            setTimeout(() => { showName = true; document.getElementById('finalMessage').style.display = "block"; setTimeout(() => document.getElementById('finalMessage').style.opacity = "1", 100); }, 1200);
+                            nameVisible = true;
+                            document.getElementById('finalMessage').style.display = "block";
+                            setTimeout(() => document.getElementById('finalMessage').style.opacity = "1", 100);
                         }, 3000);
                     }
                 }
             });
         });
+
+        document.getElementById('start-btn').addEventListener('click', () => document.getElementById('intro-overlay').style.opacity = '0');
+        document.getElementById('intro-overlay').addEventListener('transitionend', () => document.getElementById('intro-overlay').style.display = 'none');
+        document.getElementById('close-btn').addEventListener('click', () => document.getElementById('popup').style.display = "none");
+
+        window.addEventListener('resize', resize);
+        resize(); draw();
     </script>
 </body>
 </html>
