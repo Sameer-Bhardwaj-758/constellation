@@ -2,156 +2,209 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>The Constellation Reeya</title>
+    <title>For Reeya</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050515; }
-        canvas { display: block; background: radial-gradient(circle at center, #140a2e 0%, #050515 100%); }
-        
-        #constellation-title { position: absolute; top: 40px; width: 100%; text-align: center; font-family: 'Dancing Script', cursive; font-size: 3.5em; color: #ffb6ff; text-shadow: 0 0 20px rgba(255, 182, 255, 0.6); pointer-events: none; z-index: 10; }
-        
-        #overlay { position: fixed; inset: 0; background: rgba(5, 5, 21, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1s; }
-        #intro-box { text-align: center; padding: 50px; border: 2px solid #ffb6ff; border-radius: 30px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); color: white; }
-        #start-btn { background: #ffb6ff; border: none; color: #050515; padding: 15px 45px; font-size: 1.4em; cursor: pointer; border-radius: 50px; font-weight: bold; margin-top: 25px; transition: 0.3s; }
-        #start-btn:hover { transform: scale(1.1); box-shadow: 0 0 25px #ffb6ff; }
+        /* Force the body to be exactly the size of the screen */
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            background-color: #050515; 
+        }
 
-        #popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 10, 46, 0.95); padding: 30px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid #ffb6ff; z-index: 5000; display: none; color: white; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
-        #popup button { margin-top: 20px; padding: 10px 25px; border-radius: 20px; border: none; background: #ffb6ff; cursor: pointer; font-weight: bold; }
+        /* Force Canvas to fill the background and stay visible */
+        #sky { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: block;
+            z-index: 1; 
+        }
+        
+        #constellation-title { 
+            position: absolute; 
+            top: 40px; 
+            width: 100%; 
+            text-align: center; 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 3.5em; 
+            color: #ffb6ff; 
+            z-index: 10; 
+            pointer-events: none; 
+        }
+        
+        #overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: #050515; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+        }
 
-        #final-msg { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 100; display: none; color: white; }
-        #final-msg h2 { font-family: 'Dancing Script', cursive; font-size: 5em; margin: 0; text-shadow: 0 0 30px white; }
+        #intro-box { 
+            text-align: center; 
+            color: white; 
+            border: 2px solid #ffb6ff; 
+            padding: 50px; 
+            border-radius: 20px;
+        }
+
+        #start-btn { 
+            background: #ffb6ff; 
+            border: none; 
+            padding: 15px 40px; 
+            font-size: 1.2em; 
+            cursor: pointer; 
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #popup { 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: #1a1a3a; 
+            color: white; 
+            padding: 30px; 
+            border: 2px solid #ffb6ff; 
+            z-index: 5000; 
+            display: none; 
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        #final-msg { 
+            position: fixed; 
+            top: 40%; 
+            width: 100%; 
+            text-align: center; 
+            z-index: 100; 
+            color: white; 
+            display: none; 
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
     <div id="overlay">
         <div id="intro-box">
-            <h1 style="font-family: 'Dancing Script'; font-size: 4em; color: #ffb6ff; margin: 0;">🌌 For Reeya</h1>
-            <p style="font-size: 1.2em; opacity: 0.8;">A sky full of promises, just for you.</p>
+            <h1 style="font-family: 'Dancing Script'; font-size: 3em;">🌌 For Reeya</h1>
+            <p>Connect the stars to see my promises.</p>
             <button id="start-btn">Begin Our Journey</button>
         </div>
     </div>
 
     <div id="constellation-title">The Constellation Reeya</div>
-    <div id="popup"><p id="popup-text" style="font-size: 1.3em; line-height: 1.5;"></p><button onclick="document.getElementById('popup').style.display='none'">Close Promise</button></div>
-    <div id="final-msg"><h2>✨ My Valentine ✨</h2><p style="font-size: 1.5em;">Every star leads back to you.</p></div>
+    
+    <div id="popup">
+        <p id="popup-text" style="font-size: 1.2em;"></p>
+        <button onclick="document.getElementById('popup').style.display='none'" style="margin-top:15px; cursor:pointer; padding:5px 15px; background:#ffb6ff; border:none;">Close</button>
+    </div>
+
+    <div id="final-msg">
+        <h2 style="font-family: 'Dancing Script'; font-size: 4em; color: #ffb6ff;">✨ My Valentine ✨</h2>
+    </div>
 
     <canvas id="sky"></canvas>
 
     <script>
         const canvas = document.getElementById("sky");
         const ctx = canvas.getContext("2d");
-        let stars = [], bgStars = [], hearts = [], nameVisible = false;
+        let stars = [], count = 0;
 
+        // FIXED COORDINATES FOR DESKTOP
         const data = [
-            {x: 0.15, y: 0.45, d: "Rose Day", t: "I promise to keep choosing you every day."},
-            {x: 0.30, y: 0.65, d: "Propose Day", t: "I promise my heart will always belong to you."},
-            {x: 0.45, y: 0.40, d: "Chocolate Day", t: "I promise to fill your life with sweetness."},
-            {x: 0.60, y: 0.65, d: "Teddy Day", t: "I promise to be your forever comfort."},
-            {x: 0.75, y: 0.45, d: "Promise Day", t: "I promise to stand beside you always."},
-            {x: 0.60, y: 0.25, d: "Hug Day", t: "I promise emotional hugs across distance."},
-            {x: 0.35, y: 0.20, d: "Kiss Day", t: "I promise soft and true love forever."}
+            {x: 0.2, y: 0.4, t: "I promise to choose you every day."},
+            {x: 0.35, y: 0.6, t: "My heart will always belong to you."},
+            {x: 0.5, y: 0.4, t: "I'll fill your life with sweetness."},
+            {x: 0.65, y: 0.6, t: "I'll be your forever comfort."},
+            {x: 0.8, y: 0.4, t: "I will stand beside you always."},
+            {x: 0.6, y: 0.2, t: "Emotional hugs across distance."},
+            {x: 0.4, y: 0.2, t: "Soft and true love forever."}
         ];
 
         function init() {
+            // Set canvas size to match the window exactly
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            // Re-map constellation to current desktop size
-            stars = data.map(s => ({...s, px: s.x * canvas.width, py: s.y * canvas.height, clicked: false}));
-            
-            // Background Twinkle Stars
-            bgStars = [];
-            for(let i=0; i<200; i++) {
-                bgStars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.8, t: Math.random()*Math.PI});
-            }
-            
-            // Floating Hearts
-            hearts = [];
-            for(let i=0; i<25; i++) {
-                hearts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*10+10, speed: Math.random()*0.4+0.2});
-            }
+            stars = data.map(s => ({
+                x: s.x * canvas.width,
+                y: s.y * canvas.height,
+                t: s.t,
+                clicked: false
+            }));
+            console.log("Stars initialized at:", stars); // Debugging check
         }
 
         function draw() {
-            // Clear and Background
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Background
             ctx.fillStyle = "#050515";
-            ctx.fillRect(0,0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Moon
-            const mx = canvas.width * 0.85, my = 120;
-            ctx.save();
-            ctx.shadowBlur = 40; ctx.shadowColor = "white";
-            ctx.fillStyle = "#fffcf0";
-            ctx.beginPath(); ctx.arc(mx, my, 50, 0, Math.PI*2); ctx.fill();
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath(); ctx.arc(mx - 20, my - 10, 50, 0, Math.PI*2); ctx.fill();
-            ctx.restore();
-
-            // Floating Hearts
-            ctx.fillStyle = "rgba(255, 182, 255, 0.4)";
-            hearts.forEach(h => {
-                h.y -= h.speed; if(h.y < -20) h.y = canvas.height + 20;
-                ctx.font = h.size + "px serif";
-                ctx.fillText("❤", h.x, h.y);
-            });
-
-            // Twinkling BG Stars
-            bgStars.forEach(s => {
-                s.t += 0.02;
-                ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + Math.abs(Math.sin(s.t))})`;
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
-            });
-
-            // Constellation Lines
-            ctx.strokeStyle = "rgba(255, 182, 255, 0.2)";
-            ctx.lineWidth = 1.5;
+            // Lines
+            ctx.strokeStyle = "rgba(255, 182, 255, 0.4)";
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            for(let i=0; i<stars.length-1; i++) {
-                ctx.moveTo(stars[i].px, stars[i].py);
-                ctx.lineTo(stars[i+1].px, stars[i+1].py);
-            }
+            stars.forEach((s, i) => {
+                if(i === 0) ctx.moveTo(s.x, s.y);
+                else ctx.lineTo(s.x, s.y);
+            });
             ctx.stroke();
 
-            // Interactive Stars
+            // Stars
             stars.forEach(s => {
-                ctx.shadowBlur = s.clicked ? 25 : 10;
-                ctx.shadowColor = s.clicked ? "#ffb6ff" : "white";
                 ctx.fillStyle = s.clicked ? "#ffb6ff" : "white";
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = s.clicked ? "#ffb6ff" : "white";
                 ctx.beginPath();
-                ctx.arc(s.px, s.py, s.clicked ? 8 : 5, 0, Math.PI*2);
+                ctx.arc(s.x, s.y, s.clicked ? 10 : 6, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.shadowBlur = 0;
             });
 
             requestAnimationFrame(draw);
         }
 
         canvas.addEventListener("click", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
             stars.forEach(s => {
-                const dist = Math.sqrt((e.clientX - s.px)**2 + (e.clientY - s.py)**2);
+                const dist = Math.sqrt((mouseX - s.x)**2 + (mouseY - s.y)**2);
                 if(dist < 30 && !s.clicked) {
                     s.clicked = true;
-                    document.getElementById('popup-text').innerHTML = `<b style="font-size:1.5em; color:#ffb6ff">${s.d}</b><br><br>${s.t}`;
+                    count++;
+                    document.getElementById('popup-text').innerText = s.t;
                     document.getElementById('popup').style.display = 'block';
                     
-                    if(stars.every(st => st.clicked)) {
+                    if(count === stars.length) {
                         setTimeout(() => {
-                            document.getElementById('popup').style.display = 'none';
                             document.getElementById('final-msg').style.display = 'block';
-                        }, 3000);
+                        }, 1000);
                     }
                 }
             });
         });
 
         document.getElementById('start-btn').addEventListener('click', () => {
-            init(); 
+            document.getElementById('overlay').style.display = 'none';
+            init();
             draw();
-            document.getElementById('overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('overlay').style.display = 'none', 1000);
         });
 
+        // Ensure it handles window resizing
         window.addEventListener('resize', init);
     </script>
 </body>
