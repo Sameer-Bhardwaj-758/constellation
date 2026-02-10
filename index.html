@@ -8,6 +8,21 @@
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #050515; }
         #sky { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; z-index: 1; }
         
+        /* Main Top Title */
+        #main-title { 
+            position: absolute; 
+            top: 30px; 
+            width: 100%; 
+            text-align: center; 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 3.5em; 
+            color: rgba(255, 182, 255, 0.9); 
+            text-shadow: 0 0 20px rgba(255, 182, 255, 0.5); 
+            z-index: 10; 
+            pointer-events: none;
+            letter-spacing: 2px;
+        }
+
         /* Intro Styling */
         #overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, #140a2e 0%, #050515 100%); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1.5s ease; }
         #intro-box { text-align: center; color: white; max-width: 600px; padding: 40px; border: 1px solid rgba(255, 182, 255, 0.3); border-radius: 40px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); }
@@ -38,6 +53,8 @@
         </div>
     </div>
 
+    <div id="main-title">Constellation of Our Love</div>
+
     <div id="popup">
         <h3 id="popup-title"></h3>
         <p id="popup-text"></p>
@@ -67,7 +84,6 @@
             {x: 0.35, y: 0.20, day: "Kiss Day", text: "I promise that every kiss we share will be as soft and true as the very first one."}
         ];
 
-        // "REEYA" Star Coordinates (Normalized)
         const reeyaCoords = [
             {x: 0.38, y: 0.85}, {x: 0.38, y: 0.88}, {x: 0.38, y: 0.91}, {x: 0.39, y: 0.85}, {x: 0.40, y: 0.86}, {x: 0.39, y: 0.88}, {x: 0.40, y: 0.91}, // R
             {x: 0.44, y: 0.85}, {x: 0.44, y: 0.88}, {x: 0.44, y: 0.91}, {x: 0.46, y: 0.85}, {x: 0.46, y: 0.88}, {x: 0.46, y: 0.91}, // E
@@ -79,12 +95,9 @@
         function init() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            
             stars = constellationData.map(s => ({...s, px: s.x * canvas.width, py: s.y * canvas.height, clicked: false}));
-            
             bgStars = [];
             for(let i=0; i<150; i++) bgStars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, t: Math.random()*Math.PI});
-            
             hearts = [];
             for(let i=0; i<20; i++) hearts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*12+8, speed: Math.random()*0.3+0.1});
         }
@@ -94,10 +107,7 @@
             draw() {
                 ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
                 ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x - this.len, this.y + this.len/2);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - this.len, this.y + this.len/2); ctx.stroke();
                 this.x += this.speed; this.y += this.speed/2; this.opacity -= 0.01;
             }
         }
@@ -116,45 +126,25 @@
         function animate() {
             ctx.fillStyle = "#050515";
             ctx.fillRect(0,0, canvas.width, canvas.height);
-
             drawMoon();
-
-            // Background Twinkle
             bgStars.forEach(s => {
                 s.t += 0.02;
                 ctx.fillStyle = `rgba(255, 255, 255, ${0.2 + Math.abs(Math.sin(s.t)) * 0.5})`;
                 ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
             });
-
-            // Floating Hearts
             ctx.fillStyle = "rgba(255, 182, 255, 0.3)";
-            hearts.forEach(h => {
-                h.y -= h.speed; if(h.y < -20) h.y = canvas.height + 20;
-                ctx.font = h.size + "px serif"; ctx.fillText("❤", h.x, h.y);
-            });
-
-            // Lines
+            hearts.forEach(h => { h.y -= h.speed; if(h.y < -20) h.y = canvas.height + 20; ctx.font = h.size + "px serif"; ctx.fillText("❤", h.x, h.y); });
             ctx.strokeStyle = "rgba(255, 182, 255, 0.2)";
             ctx.beginPath();
-            for(let i=0; i<stars.length-1; i++) {
-                ctx.moveTo(stars[i].px, stars[i].py);
-                ctx.lineTo(stars[i+1].px, stars[i+1].py);
-            }
+            for(let i=0; i<stars.length-1; i++) { ctx.moveTo(stars[i].px, stars[i].py); ctx.lineTo(stars[i+1].px, stars[i+1].py); }
             ctx.stroke();
-
-            // Stars
             stars.forEach(s => {
                 ctx.shadowBlur = s.clicked ? 25 : 10;
                 ctx.shadowColor = s.clicked ? "#ffb6ff" : "white";
                 ctx.fillStyle = s.clicked ? "#ffb6ff" : "white";
                 ctx.beginPath(); ctx.arc(s.px, s.py, s.clicked ? 9 : 6, 0, Math.PI*2); ctx.fill();
             });
-
-            if (shootingStar) {
-                shootingStar.draw();
-                if (shootingStar.opacity <= 0) shootingStar = null;
-            }
-
+            if (shootingStar) { shootingStar.draw(); if (shootingStar.opacity <= 0) shootingStar = null; }
             if (showName) {
                 nameAlpha = Math.min(1, nameAlpha + 0.005);
                 ctx.shadowBlur = 10; ctx.shadowColor = "white";
@@ -163,7 +153,6 @@
                     ctx.beginPath(); ctx.arc(p.x * canvas.width, p.y * canvas.height, 2.5, 0, Math.PI*2); ctx.fill();
                 });
             }
-
             requestAnimationFrame(animate);
         }
 
@@ -175,15 +164,11 @@
                     document.getElementById('popup-title').innerText = s.day;
                     document.getElementById('popup-text').innerText = s.text;
                     document.getElementById('popup').style.display = 'block';
-                    
                     if(count === stars.length) {
                         setTimeout(() => {
                             document.getElementById('popup').style.display = 'none';
                             shootingStar = new ShootingStar();
-                            setTimeout(() => {
-                                showName = true;
-                                document.getElementById('final-wrap').style.display = 'block';
-                            }, 1000);
+                            setTimeout(() => { showName = true; document.getElementById('final-wrap').style.display = 'block'; }, 1000);
                         }, 4000);
                     }
                 }
@@ -196,10 +181,7 @@
             setTimeout(() => document.getElementById('overlay').style.display = 'none', 1500);
         });
 
-        document.getElementById('close-btn').addEventListener('click', () => {
-            document.getElementById('popup').style.display = 'none';
-        });
-
+        document.getElementById('close-btn').addEventListener('click', () => { document.getElementById('popup').style.display = 'none'; });
         window.addEventListener('resize', init);
     </script>
 </body>
